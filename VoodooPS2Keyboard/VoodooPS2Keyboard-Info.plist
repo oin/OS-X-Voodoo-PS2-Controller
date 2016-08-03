@@ -52,8 +52,6 @@
 				<dict>
 					<key>Make Application key into right windows</key>
 					<true/>
-					<key>Make Caps Lock into F18</key>
-					<true/>
 					<key>Make Application key into Apple Fn key</key>
 					<false/>
 					<key>Make right modifier keys into Hangul and Hanja</key>
