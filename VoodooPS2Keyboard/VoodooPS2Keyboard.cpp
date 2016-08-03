@@ -60,6 +60,7 @@ void* _org_rehabman_dontstrip_[] =
 #define kMakeApplicationKeyAppleFN          "Make Application key into Apple Fn key"
 #define kMakeRightModsHangulHanja           "Make right modifier keys into Hangul and Hanja"
 #define kUseISOLayoutKeyboard               "Use ISO layout keyboard"
+#define kChangeCapsLockToApplicationKey     "Change Caps Lock into Application key"
 #define kLogScanCodes                       "LogScanCodes"
 #define kActionSwipeUp                      "ActionSwipeUp"
 #define kActionSwipeDown                    "ActionSwipeDown"
@@ -895,6 +896,20 @@ void ApplePS2Keyboard::setParamPropertiesGated(OSDictionary * dict)
             }
         }
         setProperty(kMakeApplicationKeyAppleFN, xml->isTrue() ? kOSBooleanTrue : kOSBooleanFalse);
+    }
+    
+    // Swap Caps lock and Application key
+    xml = OSDynamicCast(OSBoolean, dict->getObject(kChangeCapsLockToApplicationKey));
+    if (xml) {
+        if (!temp) {
+            if (xml->isTrue()) {
+                _PS2ToADBMap[0x3a] = _PS2ToADBMapMapped[0x15d];
+            }
+            else {
+                _PS2ToADBMap[0x3a] = _PS2ToADBMapMapped[0x3a];
+            }
+        }
+        setProperty(kChangeCapsLockToApplicationKey, xml->isTrue() ? kOSBooleanTrue : kOSBooleanFalse);
     }
     
     xml = OSDynamicCast(OSBoolean, dict->getObject(kMakeRightModsHangulHanja));
