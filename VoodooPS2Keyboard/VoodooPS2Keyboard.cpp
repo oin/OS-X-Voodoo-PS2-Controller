@@ -60,7 +60,7 @@ void* _org_rehabman_dontstrip_[] =
 #define kMakeApplicationKeyAppleFN          "Make Application key into Apple Fn key"
 #define kMakeRightModsHangulHanja           "Make right modifier keys into Hangul and Hanja"
 #define kUseISOLayoutKeyboard               "Use ISO layout keyboard"
-#define kChangeCapsLockToApplicationKey     "Change Caps Lock into Application key"
+#define kChangeCapsLockToF18     "Make Caps Lock into F18"
 #define kLogScanCodes                       "LogScanCodes"
 #define kActionSwipeUp                      "ActionSwipeUp"
 #define kActionSwipeDown                    "ActionSwipeDown"
@@ -898,19 +898,21 @@ void ApplePS2Keyboard::setParamPropertiesGated(OSDictionary * dict)
         setProperty(kMakeApplicationKeyAppleFN, xml->isTrue() ? kOSBooleanTrue : kOSBooleanFalse);
     }
     
-    // Swap Caps lock and Application key
-    xml = OSDynamicCast(OSBoolean, dict->getObject(kChangeCapsLockToApplicationKey));
+    //////
+    // Swap Caps lock and F18
+    xml = OSDynamicCast(OSBoolean, dict->getObject(kChangeCapsLockToF18));
     if (xml) {
         if (!temp) {
             if (xml->isTrue()) {
-                _PS2ToADBMap[0x3a] = _PS2ToADBMapMapped[0x15d];
+                _PS2ToADBMap[0x3a] = 0x4f; // ADB = F18
             }
             else {
                 _PS2ToADBMap[0x3a] = _PS2ToADBMapMapped[0x3a];
             }
         }
-        setProperty(kChangeCapsLockToApplicationKey, xml->isTrue() ? kOSBooleanTrue : kOSBooleanFalse);
+        setProperty(kChangeCapsLockToF18, xml->isTrue() ? kOSBooleanTrue : kOSBooleanFalse);
     }
+    //////
     
     xml = OSDynamicCast(OSBoolean, dict->getObject(kMakeRightModsHangulHanja));
     if (xml) {

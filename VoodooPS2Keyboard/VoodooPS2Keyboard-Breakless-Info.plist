@@ -38,6 +38,8 @@
 				<dict>
 					<key>Make Application key into Apple Fn key</key>
 					<true/>
+					<key>Make Caps Lock into F18</key>
+					<true/>
 					<key>Make Application key into right windows</key>
 					<false/>
 					<key>Make right modifier keys into Hangul and Hanja</key>
@@ -47,7 +49,7 @@
 					<key>Swap command and option</key>
 					<true/>
 					<key>Use ISO layout keyboard</key>
-					<false/>
+					<true/>
 					<key>alt_handler_id</key>
 					<integer>3</integer>
 					<key>SleepPressTime</key>
