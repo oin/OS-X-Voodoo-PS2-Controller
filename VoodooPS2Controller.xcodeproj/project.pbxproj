@@ -813,7 +813,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULE_VERSION = 1.8.250;
+				MODULE_VERSION = 1.8.99;
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				PRODUCT_NAME = VoodooPS2Controller;
 				SDKROOT = macosx10.8;
@@ -838,7 +838,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULE_VERSION = 1.8.250;
+				MODULE_VERSION = 1.8.99;
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				PRODUCT_NAME = VoodooPS2Controller;
 				SDKROOT = macosx10.8;
@@ -854,7 +854,7 @@
 				GCC_PREFIX_HEADER = "VoodooPS2Controller/VoodooPS2Controller-Prefix.pch";
 				INFOPLIST_FILE = "VoodooPS2Controller/VoodooPS2Controller-Info.plist";
 				MODULE_NAME = com.rehabman.driver.VoodooPS2Controller;
-				MODULE_VERSION = 1.8.250;
+				MODULE_VERSION = 1.8.99;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -870,7 +870,7 @@
 				GCC_PREFIX_HEADER = "VoodooPS2Controller/VoodooPS2Controller-Prefix.pch";
 				INFOPLIST_FILE = "VoodooPS2Controller/VoodooPS2Controller-Info.plist";
 				MODULE_NAME = com.rehabman.driver.VoodooPS2Controller;
-				MODULE_VERSION = 1.8.250;
+				MODULE_VERSION = 1.8.99;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = YES;
