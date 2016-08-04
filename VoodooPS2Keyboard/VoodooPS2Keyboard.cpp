@@ -436,16 +436,16 @@ bool ApplePS2Keyboard::start(IOService * provider)
         _device = 0;
         return false;
     }
-    _sleepEjectTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &ApplePS2Keyboard::onSleepEjectTimer));
-    if (!_sleepEjectTimer)
-    {
-        _cmdGate->release();
-        _cmdGate = 0;
-        _device->release();
-        _device = 0;
-        return false;
-    }
-    pWorkLoop->addEventSource(_sleepEjectTimer);
+//    _sleepEjectTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &ApplePS2Keyboard::onSleepEjectTimer));
+//    if (!_sleepEjectTimer)
+//    {
+//        _cmdGate->release();
+//        _cmdGate = 0;
+//        _device->release();
+//        _device = 0;
+//        return false;
+//    }
+//    pWorkLoop->addEventSource(_sleepEjectTimer);
     pWorkLoop->addEventSource(_cmdGate);
     
     // _macroTimer is used in for macro inversion
@@ -789,18 +789,18 @@ void ApplePS2Keyboard::setParamPropertiesGated(OSDictionary * dict)
     
 //REVIEW: this code needs cleanup (should be table driven like mouse/trackpad)
 
-    // get time before sleep button takes effect
-	if (OSNumber* num = OSDynamicCast(OSNumber, dict->getObject(kSleepPressTime)))
-    {
-        _maxsleeppresstime = num->unsigned32BitValue();
-        setProperty(kSleepPressTime, _maxsleeppresstime, 32);
-    }
-    // get time before eject button takes effect (no modifiers)
-    if (OSNumber* num = OSDynamicCast(OSNumber, dict->getObject(kHIDF12EjectDelay)))
-    {
-        _f12ejectdelay = num->unsigned32BitValue();
-        setProperty(kHIDF12EjectDelay, _f12ejectdelay, 32);
-    }
+//    // get time before sleep button takes effect
+//	if (OSNumber* num = OSDynamicCast(OSNumber, dict->getObject(kSleepPressTime)))
+//    {
+//        _maxsleeppresstime = num->unsigned32BitValue();
+//        setProperty(kSleepPressTime, _maxsleeppresstime, 32);
+//    }
+//    // get time before eject button takes effect (no modifiers)
+//    if (OSNumber* num = OSDynamicCast(OSNumber, dict->getObject(kHIDF12EjectDelay)))
+//    {
+//        _f12ejectdelay = num->unsigned32BitValue();
+//        setProperty(kHIDF12EjectDelay, _f12ejectdelay, 32);
+//    }
     // get time between keys part of a macro "inversion"
     if (OSNumber* num = OSDynamicCast(OSNumber, dict->getObject(kMaxMacroTime)))
     {
@@ -1022,12 +1022,12 @@ void ApplePS2Keyboard::stop(IOService * provider)
             _cmdGate->release();
             _cmdGate = 0;
         }
-        if (_sleepEjectTimer)
-        {
-            pWorkLoop->removeEventSource(_sleepEjectTimer);
-            _sleepEjectTimer->release();
-            _sleepEjectTimer = 0;
-        }
+//        if (_sleepEjectTimer)
+//        {
+//            pWorkLoop->removeEventSource(_sleepEjectTimer);
+//            _sleepEjectTimer->release();
+//            _sleepEjectTimer = 0;
+//        }
         if (_macroTimer)
         {
             pWorkLoop->removeEventSource(_macroTimer);
@@ -1547,24 +1547,24 @@ void ApplePS2Keyboard::modifyKeyboardBacklight(int keyCode, bool goingDown)
 
 void ApplePS2Keyboard::onSleepEjectTimer()
 {
-    switch (_timerFunc)
-    {
-        case kTimerSleep:
-        {
-            IOPMrootDomain* rootDomain = getPMRootDomain();
-            if (NULL != rootDomain)
-                rootDomain->receivePowerNotification(kIOPMSleepNow);
-            break;
-        }
-
-        case kTimerEject:
-        {
-            uint64_t now_abs;
-            clock_get_uptime(&now_abs);
-            dispatchKeyboardEventX(0x92, true, now_abs);
-            break;
-        }
-    }
+//    switch (_timerFunc)
+//    {
+//        case kTimerSleep:
+//        {
+//            IOPMrootDomain* rootDomain = getPMRootDomain();
+//            if (NULL != rootDomain)
+//                rootDomain->receivePowerNotification(kIOPMSleepNow);
+//            break;
+//        }
+//
+//        case kTimerEject:
+//        {
+//            uint64_t now_abs;
+//            clock_get_uptime(&now_abs);
+//            dispatchKeyboardEventX(0x92, true, now_abs);
+//            break;
+//        }
+//    }
 }
 
 bool ApplePS2Keyboard::dispatchKeyboardEventWithPacket(const UInt8* packet)
@@ -1706,68 +1706,68 @@ bool ApplePS2Keyboard::dispatchKeyboardEventWithPacket(const UInt8* packet)
             }
             break;
                 
-        case 0x015f:    // sleep
-            keyCode = 0;
-            if (goingDown)
-            {
-                _timerFunc = kTimerSleep;
-                if (_fkeymode || !_maxsleeppresstime)
-                    onSleepEjectTimer();
-                else
-                    setTimerTimeout(_sleepEjectTimer, (uint64_t)_maxsleeppresstime * 1000000);
-            }
-            else
-            {
-                cancelTimer(_sleepEjectTimer);
-            }
-            break;
+//        case 0x015f:    // sleep
+//            keyCode = 0;
+//            if (goingDown)
+//            {
+//                _timerFunc = kTimerSleep;
+//                if (_fkeymode || !_maxsleeppresstime)
+//                    onSleepEjectTimer();
+//                else
+//                    setTimerTimeout(_sleepEjectTimer, (uint64_t)_maxsleeppresstime * 1000000);
+//            }
+//            else
+//            {
+//                cancelTimer(_sleepEjectTimer);
+//            }
+//            break;
 
-        //REVIEW: this is getting a bit ugly
-        case 0x0128:    // alternate that cannot fnkeys toggle (discrete trackpad toggle)
-        case 0x0137:    // prt sc/sys rq
-        {
-            unsigned origKeyCode = keyCode;
-            keyCode = 0;
-            if (!goingDown)
-                break;
-            if (!checkModifierState(kMaskLeftControl))
-            {
-                // get current enabled status, and toggle it
-                bool enabled;
-                _device->dispatchMouseMessage(kPS2M_getDisableTouchpad, &enabled);
-                enabled = !enabled;
-                _device->dispatchMouseMessage(kPS2M_setDisableTouchpad, &enabled);
-                break;
-            }
-            if (origKeyCode != 0x0137)
-                break; // do not fall through for 0x0128
-            // fall through
-        }
-        case 0x0127:    // alternate for fnkeys toggle (discrete fnkeys toggle)
-            keyCode = 0;
-            if (!goingDown)
-                break;
-            if (_fkeymodesupported)
-            {
-                // modify HIDFKeyMode via IOService... IOHIDSystem
-                if (IOService* service = IOService::waitForMatchingService(serviceMatching(kIOHIDSystem), 0))
-                {
-                    const OSObject* num = OSNumber::withNumber(!_fkeymode, 32);
-                    const OSString* key = OSString::withCString(kHIDFKeyMode);
-                    if (num && key)
-                    {
-                        if (OSDictionary* dict = OSDictionary::withObjects(&num, &key, 1))
-                        {
-                            service->setProperties(dict);
-                            dict->release();
-                        }
-                    }
-                    OSSafeRelease(num);
-                    OSSafeRelease(key);
-                    service->release();
-                }
-            }
-            break;
+//        //REVIEW: this is getting a bit ugly
+//        case 0x0128:    // alternate that cannot fnkeys toggle (discrete trackpad toggle)
+//        case 0x0137:    // prt sc/sys rq
+//        {
+//            unsigned origKeyCode = keyCode;
+//            keyCode = 0;
+//            if (!goingDown)
+//                break;
+//            if (!checkModifierState(kMaskLeftControl))
+//            {
+//                // get current enabled status, and toggle it
+//                bool enabled;
+//                _device->dispatchMouseMessage(kPS2M_getDisableTouchpad, &enabled);
+//                enabled = !enabled;
+//                _device->dispatchMouseMessage(kPS2M_setDisableTouchpad, &enabled);
+//                break;
+//            }
+//            if (origKeyCode != 0x0137)
+//                break; // do not fall through for 0x0128
+//            // fall through
+//        }
+//        case 0x0127:    // alternate for fnkeys toggle (discrete fnkeys toggle)
+//            keyCode = 0;
+//            if (!goingDown)
+//                break;
+//            if (_fkeymodesupported)
+//            {
+//                // modify HIDFKeyMode via IOService... IOHIDSystem
+//                if (IOService* service = IOService::waitForMatchingService(serviceMatching(kIOHIDSystem), 0))
+//                {
+//                    const OSObject* num = OSNumber::withNumber(!_fkeymode, 32);
+//                    const OSString* key = OSString::withCString(kHIDFKeyMode);
+//                    if (num && key)
+//                    {
+//                        if (OSDictionary* dict = OSDictionary::withObjects(&num, &key, 1))
+//                        {
+//                            service->setProperties(dict);
+//                            dict->release();
+//                        }
+//                    }
+//                    OSSafeRelease(num);
+//                    OSSafeRelease(key);
+//                    service->release();
+//                }
+//            }
+//            break;
     }
 
 #ifdef DEBUG
@@ -1807,24 +1807,24 @@ bool ApplePS2Keyboard::dispatchKeyboardEventWithPacket(const UInt8* packet)
                 adbKeyCode = DEADKEY;
             }
             break;
-        case 0x92: // eject
-            if (0 == _PS2modifierState)
-            {
-                if (goingDown)
-                {
-                    eatKey = true;
-                    _timerFunc = kTimerEject;
-                    if (!_f12ejectdelay)
-                        onSleepEjectTimer();
-                    else
-                        setTimerTimeout(_sleepEjectTimer, (uint64_t)_f12ejectdelay * 1000000);
-                }
-                else
-                {
-                    cancelTimer(_sleepEjectTimer);
-                }
-            }
-            break;
+//        case 0x92: // eject
+//            if (0 == _PS2modifierState)
+//            {
+//                if (goingDown)
+//                {
+//                    eatKey = true;
+//                    _timerFunc = kTimerEject;
+//                    if (!_f12ejectdelay)
+//                        onSleepEjectTimer();
+//                    else
+//                        setTimerTimeout(_sleepEjectTimer, (uint64_t)_f12ejectdelay * 1000000);
+//                }
+//                else
+//                {
+//                    cancelTimer(_sleepEjectTimer);
+//                }
+//            }
+//            break;
     }
 
 #ifdef DEBUG_VERBOSE
